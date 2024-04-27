@@ -1,29 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../shared/components/components.dart';
+import '../shared/providers.dart';
 
-class SignupScreen extends StatefulWidget {
+class SignupScreen extends ConsumerWidget {
   const SignupScreen();
 
   @override
-  _SignupScreenState createState() => _SignupScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final usernameController = TextEditingController();
+    final passwordController = TextEditingController();
+    final confirmPasswordController = TextEditingController();
+    final formKey = ref.read(formKeyProvider);
 
-class _SignupScreenState extends State<SignupScreen> {
-  var usernameController = TextEditingController();
-  var passwordController = TextEditingController();
-  var confirmPasswordController = TextEditingController();
-  var formKey = GlobalKey<FormState>();
-  var confirmPass;
-  bool showPassword = true;
-  bool showConfirmPassword = true;
-
-  @override
-  void setState(VoidCallback fn) {
-    super.setState(fn);
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(25.0),
@@ -33,7 +22,6 @@ class _SignupScreenState extends State<SignupScreen> {
               key: formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-
                 children: [
                   Text(
                     "SignUp",
@@ -43,37 +31,14 @@ class _SignupScreenState extends State<SignupScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(
-                    height: 20.0,
-                  ),
+                  SizedBox(height: 20.0),
                   defaultFormField(
-                    prefix: Icons.account_circle,
-                    validate: (value) {
-                      if (value!.isEmpty) {
-                        return "UserName must not be empty";
-                      }
-
-                      else if (value.length < 3) {
-                        return "Username must be at least 3 characters long";
-                      }
-
-                      return null;
-                    },
-                    type: TextInputType.visiblePassword,
-                    Controller: usernameController,
-                    Label: 'UserName',
-                  ),
-
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  defaultFormField(
-                    suffix:
-                    showPassword ? Icons.visibility : Icons.visibility_off,
+                    suffix: isPasswordVisible
+                        ? Icons.visibility
+                        : Icons.visibility_off,
                     prefix: Icons.lock,
                     validate: (value) {
-                      confirmPass = value;
-                      if (value!.isEmpty) {
+                      if (value.isEmpty) {
                         return "Password must not be empty";
                       } else if (value.length < 8) {
                         return "Password must be at least 8 characters long";
@@ -84,20 +49,19 @@ class _SignupScreenState extends State<SignupScreen> {
                     Controller: passwordController,
                     Label: 'Password',
                   ),
-                  SizedBox(
-                    height: 20.0,
-                  ),
+                  SizedBox(height: 20.0),
                   defaultFormField(
-                    suffix:
-                    showConfirmPassword ? Icons.visibility : Icons.visibility_off,
+                    suffix: isConfirmPasswordVisible
+                        ? Icons.visibility
+                        : Icons.visibility_off,
                     prefix: Icons.lock,
                     validate: (value) {
-                      if (value!.isEmpty) {
+                      if (value.isEmpty) {
                         return "Password must not be empty";
                       } else if (value.length < 8) {
-                        return "Password must be atleast 8 characters long";
-                      }
-                      else if (value != confirmPass) {
+                        return "Password must be at least 8 characters long";
+                      } else if (value !=
+                          confirmPasswordController.text) {
                         return "Password Don't match";
                       }
                       return null;
@@ -107,7 +71,12 @@ class _SignupScreenState extends State<SignupScreen> {
                     Controller: confirmPasswordController,
                   ),
                   ElevatedButton(
-                    onPressed: () {  },
+                    onPressed: () {
+                      if (formKey.currentState!.validate()) {
+                        // Handle signup logic here
+                        // Access form fields using usernameController.text, passwordController.text, confirmPasswordController.text
+                      }
+                    },
                     child: Text("Signup"),
                   ),
                 ],
@@ -119,3 +88,4 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 }
+
