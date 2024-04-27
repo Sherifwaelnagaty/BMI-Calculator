@@ -12,6 +12,8 @@ class SignupScreen extends ConsumerWidget {
     final passwordController = TextEditingController();
     final confirmPasswordController = TextEditingController();
     final formKey = ref.read(formKeyProvider);
+    bool isPasswordVisible = true;
+    bool isConfirmPasswordVisible = true;
 
     return Scaffold(
       body: Padding(
