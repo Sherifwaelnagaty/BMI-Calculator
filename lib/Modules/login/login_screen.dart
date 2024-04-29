@@ -1,3 +1,4 @@
+import 'package:bmicalculator/Modules/bmi/bmi_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -13,10 +14,16 @@ class LoginScreen extends ConsumerWidget {
           child: SingleChildScrollView(
             child: ElevatedButton(
               onPressed: () async {
+
                 try {
                   final userCredential =
                   await FirebaseAuth.instance.signInAnonymously();
-                  print("Signed in with temporary account.");
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context)=>BMIScreen(),
+                    ),
+                  );
                 } on FirebaseAuthException catch (e) {
                   switch (e.code) {
                     case "operation-not-allowed":
